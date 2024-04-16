@@ -53,36 +53,42 @@ if ($_FILES['photo']['name'] != null) {
 } else {
     $photo = $_POST['currentPhoto'];
 }
+try{
+    if ($ok == true) {
 
-if ($ok == true) {
+        require 'include/db.php';
 
-    require 'include/db.php';
+        if (!empty($gameId)) {
+            $sql = "UPDATE examgames SET title = :title, releaseYear = :releaseYear,
+                    rating = :rating, publisherId = :publisherId,
+                    photo = :photo WHERE gameId = :gameId";
+        } else {
+            $sql = "INSERT INTO examgames (title, releaseYear, rating, publisherId, photo) VALUES 
+                        (:title, :releaseYear, :rating, :publisherId, :photo)";
+        }
 
-    if (!empty($gameId)) {
-        $sql = "UPDATE examgames SET title = :title, releaseYear = :releaseYear,
-                rating = :rating, publisherId = :publisherId,
-                 photo = :photo WHERE gameId = :gameId";
-    } else {
-        $sql = "INSERT INTO examgames (title, releaseYear, rating, publisherId, photo) VALUES 
-                    (:title, :releaseYear, :rating, :publisherId, :photo)";
+        $cmd = $db->prepare($sql);
+        $cmd->bindParam(':title', $title, PDO::PARAM_STR, 50);
+        $cmd->bindParam(':releaseYear', $releaseYear, PDO::PARAM_INT);
+        $cmd->bindParam(':rating', $rating, PDO::PARAM_STR, 10);
+        $cmd->bindParam(':publisherId', $publisherId, PDO::PARAM_INT);
+        $cmd->bindParam(':photo', $photo, PDO::PARAM_STR, 100);
+        if (!empty($gameId)) {
+            $cmd->bindParam(':gameId', $gameId, PDO::PARAM_INT);
+        }
+
+        $cmd->execute();
+
+        $db = null;
+
+        echo "Game Saved";
+        header('location:games.php');
     }
-
-    $cmd = $db->prepare($sql);
-    $cmd->bindParam(':title', $title, PDO::PARAM_STR, 50);
-    $cmd->bindParam(':releaseYear', $releaseYear, PDO::PARAM_INT);
-    $cmd->bindParam(':rating', $rating, PDO::PARAM_STR, 10);
-    $cmd->bindParam(':publisherId', $publisherId, PDO::PARAM_INT);
-    $cmd->bindParam(':photo', $photo, PDO::PARAM_STR, 100);
-    if (!empty($gameId)) {
-        $cmd->bindParam(':gameId', $gameId, PDO::PARAM_INT);
-    }
-
-    $cmd->execute();
-
-    $db = null;
-
-    echo "Game Saved";
-    header('location:games.php');
+}
+catch (Exception $err) {
+   
+    header('location:error.php');
+    exit();
 }
 ?>
 </body>
