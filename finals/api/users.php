@@ -6,11 +6,11 @@ $username=null;
 if (!empty($_GET['USERNAME'])) {
     $username = $_GET['USERNAME'];
 }
-$sql="SELECT * FROM examusers ORDER BY $username";
+$sql="SELECT * FROM examusers ";
 
 
 if (!empty($username)) {
-    $sql = "SELECT * FROM examusers WHERE username = :username";
+    $sql = "SELECT * FROM examusers WHERE $username = :username";
 }
 
 $cmd = $db->prepare($sql);
