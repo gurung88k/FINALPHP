@@ -1,0 +1,4 @@
+ErrorDocument 404 15.222.122.223/~Krish200560503/finals/404.php
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule \.php$15.222.122.223/~Krish200560503/finals/404.php [L]
